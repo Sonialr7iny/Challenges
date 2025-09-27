@@ -1,3 +1,4 @@
+import 'package:challenges/presentations/screens/challenge_two.dart';
 import 'package:flutter/material.dart';
 
 class ChallengeOne extends StatefulWidget {
@@ -23,47 +24,70 @@ class _ChallengeOneState extends State<ChallengeOne> {
           onPressed: () {},
           icon: Icon(Icons.arrow_back_ios_sharp),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChallengeTwo()),
+              );
+            },
+            icon: Icon(Icons.navigate_next_rounded, size: 40),
+          ),
+        ],
         title: Text('Task Manager', textAlign: TextAlign.center),
       ),
-      body: ReorderableListView( onReorder: (int oldIndex, int newIndex) {
-        setState(() {
-          if (oldIndex < newIndex) newIndex--;
-          final task = tasks.removeAt(oldIndex);
-          final check = checked.removeAt(oldIndex);
-          tasks.insert(newIndex > oldIndex ? newIndex-- : newIndex, task);
-          checked.insert(newIndex, check);
-        });},
-          children: List.generate(tasks.length, (index) {
-            return Dismissible(
-              key: Key('$index'),
-              direction: DismissDirection.endToStart,
-              background: Container(
-                color: Colors.red,
-                alignment: Alignment.centerRight,
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Icon(Icons.delete, color: Colors.white,),
-              ),
-              confirmDismiss: (direction)async {
-                return await showDialog(context: context, builder:(context) => AlertDialog(
+      body: ReorderableListView(
+        onReorder: (int oldIndex, int newIndex) {
+          setState(() {
+            if (oldIndex < newIndex) {
+              newIndex-=1;
+            }
+            final task = tasks.removeAt(oldIndex);
+            final check = checked.removeAt(oldIndex);
+            tasks.insert( newIndex, task);
+            checked.insert(newIndex, check);
+          });
+        },
+        children: List.generate(tasks.length, (index) {
+          return Dismissible(
+            key: Key('$index'),
+            direction: DismissDirection.endToStart,
+            background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Icon(Icons.delete, color: Colors.white),
+            ),
+            confirmDismiss: (direction) async {
+              return await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
                   title: Text('Confirm Delete'),
                   content: Text('Delete ${tasks[index]}'),
                   actions: [
-                    TextButton(onPressed: () => Navigator.of(context).pop(false),
-                        child: Text('Cancel')),
-                    TextButton(onPressed: () => Navigator.of(context).pop(true),
-                        child: Text('Delete'))
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text('Delete'),
+                    ),
                   ],
-                ), );
-              },
-              onDismissed: (direction) async{
-                final removedTask = tasks[index];
-                final wasChecked = checked[index];
-                setState(() {
-                  tasks.removeAt(index);
-                  checked.removeAt(index);
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Deleted "$removedTask"'),
+                ),
+              );
+            },
+            onDismissed: (direction) async {
+              final removedTask = tasks[index];
+              final wasChecked = checked[index];
+              setState(() {
+                tasks.removeAt(index);
+                checked.removeAt(index);
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Deleted "$removedTask"'),
                   action: SnackBarAction(
                     label: 'Undo',
                     onPressed: () {
@@ -73,10 +97,10 @@ class _ChallengeOneState extends State<ChallengeOne> {
                       });
                     },
                   ),
-                )
-                );
-              },
-                // for (int index = 0; index < tasks.length; index++)
+                ),
+              );
+            },
+            // for (int index = 0; index < tasks.length; index++)
             child: Card(
               key: Key('$index'),
               child: ListTile(
@@ -105,12 +129,10 @@ class _ChallengeOneState extends State<ChallengeOne> {
                   },
                 ),
               ),
-            )
-            );
-            }
+            ),
+          );
+        }),
       ),
-      )
-
     );
   }
 }

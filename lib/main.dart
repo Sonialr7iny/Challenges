@@ -1,4 +1,5 @@
 import 'package:challenges/presentations/screens/challenge_one.dart';
+import 'package:challenges/presentations/screens/challenge_three.dart';
 import 'package:challenges/presentations/screens/challenge_two.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
 
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home:ChallengeTwo(),
+      home:ChallengeOne(),
     );
   }
 }
